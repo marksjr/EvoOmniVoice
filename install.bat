@@ -30,13 +30,42 @@ pause
 echo.
 echo [STEP 1/5] Checking disk space...
 
-:: Check disk space using PowerShell
-for /f "tokens=*" %%i in ('powershell -Command "(Get-Volume -DriveLetter '%~d0').SizeRemaining / 1GB"') do set FREE_SPACE=%%i
+:: Try multiple methods to check disk space (fallback if one fails)
+set "FREE_SPACE="
 
-:: Round down to integer
+:: Method 1: PowerShell Get-Volume (most reliable on Windows 10/11)
+for /f "tokens=*" %%i in ('powershell -Command "try { [math]::Floor((Get-Volume -DriveLetter '%~d0').SizeRemaining / 1GB) } catch { Write-Host 'ERROR' }" 2^>^&1') do set FREE_SPACE=%%i
+
+:: Validate result
+if "!FREE_SPACE!"=="ERROR" (
+    echo [WARN] PowerShell Get-Volume failed, trying alternative method...
+    set "FREE_SPACE="
+    
+    :: Method 2: WMIC diskdrive (works on older Windows)
+    for /f "tokens=*" %%i in ('wmic logicaldisk where "DeviceID='%~d0'" get FreeSpace /value 2^>^&1 ^| find "FreeSpace="') do (
+        for /f "tokens=2 delims==" %%j in ("%%i") do (
+            :: Convert bytes to GB
+            for /f "tokens=*" %%k in ('powershell -Command "[math]::Floor(%%j / 1GB)" 2^>^&1') do set FREE_SPACE=%%k
+        )
+    )
+)
+
+:: Method 3: Simple fsutil fallback
+if "!FREE_SPACE!"=="" (
+    echo [WARN] Using alternative disk check method...
+    for /f "tokens=*" %%i in ('powershell -Command "$disk = Get-PSDrive '%~d0'; [math]::Floor(($disk.Free / 1GB))" 2^>^&1') do set FREE_SPACE=%%i
+)
+
+:: Validate we got a number
 for /f "tokens=1 delims=." %%i in ("!FREE_SPACE!") do set FREE_SPACE_INT=%%i
 
-if !FREE_SPACE_INT! LSS %REQUIRED_SPACE_GB% (
+:: If still invalid, assume OK and continue (user can override if needed)
+if not defined FREE_SPACE_INT (
+    echo [WARN] Unable to determine free space accurately. Assuming sufficient space.
+    echo [INFO] Required: %REQUIRED_SPACE_GB% GB free
+    echo.
+    set "FREE_SPACE_INT=999"
+) else if !FREE_SPACE_INT! LSS %REQUIRED_SPACE_GB% (
     echo [ERROR] Insufficient disk space!
     echo.
     echo Required space: %REQUIRED_SPACE_GB% GB
