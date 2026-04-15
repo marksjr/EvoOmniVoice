@@ -1,178 +1,184 @@
-# 🎙️ Evo OmniVoice - Texto para Fala com IA
+# 🎙️ Evo OmniVoice - AI Text-to-Speech
 
-Sistema de **Text-to-Speech (TTS)** de alta qualidade baseado em IA, com suporte a **11 idiomas**, **clonagem de voz** e **expressões emocionais**.
+High-quality **Text-to-Speech (TTS)** system powered by AI, supporting **11 languages**, **voice cloning**, and **emotional expressions**.
 
 ![Evo OmniVoice Interface](image.png)
 
 ---
 
-## ✨ Recursos Principais
+## ✨ Key Features
 
-- 🌍 **11 Idiomas Suportados** - Português, Inglês, Espanhol, Francês, Alemão, Japonês e mais
-- 🎭 **Tags Expressivas** - Adicione risos, suspiros, sussurros e emoções ao áudio
-- 👤 **Clonagem de Voz** - Clone qualquer voz com apenas 3-10 segundos de áudio
-- 🎨 **Design de Voz** - Crie vozes personalizadas com prompts descritivos
-- ⚡ **Acelerado por GPU** - Usa NVIDIA CUDA para geração ultra-rápida
-- 🔌 **API REST** - Integração fácil com outros aplicativos
-- 📦 **100% Portátil** - Tudo fica dentro da pasta do projeto
-
----
-
-## 💻 Requisitos do Sistema
-
-### Mínimos
-| Componente | Requisito |
-|---|---|
-| **Sistema Operacional** | Windows 10/11 (64-bit) |
-| **Processador** | Qualquer CPU x64 |
-| **Memória RAM** | 8 GB |
-| **Espaço em Disco** | 8 GB livres |
-| **Conexão Internet** | Necessária para instalação |
-
-### Recomendados
-| Componente | Requisito |
-|---|---|
-| **Placa de Vídeo** | NVIDIA RTX 3070 ou superior (8GB+ VRAM) |
-| **Memória RAM** | 16 GB ou mais |
-| **Espaço em Disco** | 15 GB livres |
-
-> **Nota:** O sistema funciona sem GPU, mas será mais lento. Com GPU NVIDIA, a geração é **10x mais rápida**!
+- 🌍 **11 Languages Supported** - Portuguese, English, Spanish, French, German, Japanese, and more
+- 🎭 **Expressive Tags** - Add laughter, sighs, whispers, and emotions to audio
+- 👤 **Voice Cloning** - Clone any voice with just 3-10 seconds of audio
+- 🎨 **Voice Design** - Create custom voices with descriptive prompts
+- ⚡ **GPU Accelerated** - Uses NVIDIA CUDA for ultra-fast generation
+- 🔌 **REST API** - Easy integration with other applications
+- 📦 **100% Portable** - Everything stays within the project folder
 
 ---
 
-## 🚀 Instalação (Super Fácil!)
+## 💻 System Requirements
 
-### Passo 1: Baixar o Projeto
+### Minimum Requirements
+| Component | Requirement |
+|---|---|
+| **Operating System** | Windows 10/11 (64-bit) |
+| **Processor** | Any x64 CPU (Intel/AMD) |
+| **RAM** | 8 GB |
+| **Storage** | 8 GB free space |
+| **Internet** | Required for installation |
+| **GPU** | Not required (CPU mode available) |
+
+### Recommended Requirements
+| Component | Recommendation |
+|---|---|
+| **Graphics Card** | NVIDIA GPU with CUDA support (GTX 1060 6GB or better) |
+| **RAM** | 16 GB or more |
+| **Storage** | 15 GB free space (SSD recommended) |
+
+> **Note:** The system works without a GPU, but generation will be slower. With an NVIDIA GPU, generation is **5-10x faster**!
+
+### GPU Compatibility
+- **Supported:** NVIDIA GPUs with CUDA support (GTX 1060, RTX 2060, RTX 3070, RTX 4090, etc.)
+- **Not Supported:** AMD GPUs, Intel integrated graphics (will use CPU mode)
+- **VRAM Required:** Minimum 4 GB for GPU mode
+
+---
+
+## 🚀 Installation (Super Easy!)
+
+### Step 1: Download the Project
 
 ```bash
 git clone https://github.com/marksjr/EvoOmniVoice.git
 ```
 
-Ou faça download do ZIP diretamente do GitHub.
+Or download the ZIP directly from GitHub.
 
-### Passo 2: Instalar
+### Step 2: Install
 
-1. Extraia a pasta para qualquer local (ex: `C:\EvoOmniVoice`)
-2. Dê **duplo clique** em `install.bat`
-3. Aguarde a instalação automática
+1. Extract the folder anywhere (e.g., `C:\EvoOmniVoice`)
+2. **Double-click** `install.bat`
+3. Wait for automatic installation
 
-O instalador fará automaticamente:
-- ✅ Verificação de espaço em disco
-- ✅ Download e instalação do Python portátil
-- ✅ Download e instalação do FFmpeg
-- ✅ Criação do ambiente virtual
-- ✅ Instalação de todas as dependências
-- ✅ Teste pós-instalação
+The installer will automatically:
+- ✅ Check available disk space
+- ✅ Download and install portable Python
+- ✅ Download and install FFmpeg
+- ✅ Create virtual environment
+- ✅ Install all dependencies
+- ✅ Run post-installation tests
 
-> ⏱️ **Tempo estimado:** 10-30 minutos (depende da sua internet)
-
----
-
-## 🎯 Como Usar
-
-### Iniciar o Sistema
-
-Dê **duplo clique** em `start.bat`
-
-O sistema vai:
-1. Verificar se está instalado
-2. Detectar seu hardware (GPU/CPU)
-3. Iniciar o servidor
-4. Abrir a interface no navegador
-
-> 🔄 **Na primeira vez**, o modelo será baixado automaticamente (~4-5 GB). Aguarde!
-
-### Interface Web
-
-![Interface Evo OmniVoice](image.png)
-
-#### Modo Quick TTS (Rápido)
-1. Selecione o idioma desejado
-2. Digite o texto
-3. Ajuste velocidade e qualidade
-4. Clique em **"Generate Audio"**
-
-#### Modo Voice Design (Design de Voz)
-1. Descreva a voz que deseja criar
-2. Use os botões rápidos para selecionar atributos
-3. Clique em **"Generate Audio"**
-
-**Atributos válidos:**
-- **Gênero:** male, female
-- **Idade:** child, teenager, young adult, middle-aged, elderly
-- **Tom:** very low pitch, low pitch, moderate pitch, high pitch, very high pitch
-- **Sotaque:** american, british, australian, canadian, chinese, indian, japanese, korean, portuguese, russian
-- **Estilo:** whisper
-
-#### Modo Voice Cloning (Clonagem de Voz)
-1. Faça upload de um áudio de referência (3-10 segundos)
-2. (Opcional) Digite o transcript exato do áudio
-3. Digite o texto que deseja sintetizar
-4. Clique em **"Generate Audio"**
+> ⏱️ **Estimated time:** 10-30 minutes (depends on your internet speed)
 
 ---
 
-## 🌍 Idiomas Suportados
+## 🎯 How to Use
 
-| Idioma | Código | Exemplo |
+### Start the System
+
+**Double-click** `start.bat`
+
+The system will:
+1. Check if installed
+2. Detect your hardware (GPU/CPU)
+3. Start the server
+4. Open the interface in your browser
+
+> 🔄 **First time only:** The model will be downloaded automatically (~4-5 GB). Please wait!
+
+### Web Interface
+
+![Evo OmniVoice Interface](image.png)
+
+#### Quick TTS Mode
+1. Select the desired language
+2. Type your text
+3. Adjust speed and quality
+4. Click **"Generate Audio"**
+
+#### Voice Design Mode
+1. Describe the voice you want to create
+2. Use quick-select buttons for attributes
+3. Click **"Generate Audio"**
+
+**Valid attributes:**
+- **Gender:** male, female
+- **Age:** child, teenager, young adult, middle-aged, elderly
+- **Pitch:** very low pitch, low pitch, moderate pitch, high pitch, very high pitch
+- **Accent:** american, british, australian, canadian, chinese, indian, japanese, korean, portuguese, russian
+- **Style:** whisper
+
+#### Voice Cloning Mode
+1. Upload reference audio (3-10 seconds)
+2. (Optional) Type exact transcript of the audio
+3. Type the text you want to synthesize
+4. Click **"Generate Audio"**
+
+---
+
+## 🌍 Supported Languages
+
+| Language | Code | Example |
 |---|---|---|
-| 🇧🇷 Português | `pt` | Olá, como vai você? |
-| 🇺🇸 Inglês | `en` | Hello, how are you? |
-| 🇪🇸 Espanhol | `es` | Hola, ¿cómo estás? |
-| 🇫🇷 Francês | `fr` | Bonjour, comment allez-vous? |
-| 🇩🇪 Alemão | `de` | Hallo, wie geht es Ihnen? |
-| 🇯🇵 Japonês | `ja` | こんにちは、お元気ですか？ |
-| 🇳🇴 Norueguês | `no` | Hei, hvordan har du det? |
-| 🇸🇪 Sueco | `sv` | Hej, hur mår du? |
-| 🇩🇰 Dinamarquês | `da` | Hej, hvordan har du det? |
-| 🇳🇱 Holandês | `nl` | Hallo, hoe gaat het? |
-| 🇸🇦 Árabe | `ar` | مرحبا، كيف حالك؟ |
+| 🇧 Portuguese | `pt` | Olá, como vai você? |
+| 🇺🇸 English | `en` | Hello, how are you? |
+| 🇪🇸 Spanish | `es` | Hola, ¿cómo estás? |
+| 🇫🇷 French | `fr` | Bonjour, comment allez-vous? |
+| 🇩 German | `de` | Hallo, wie geht es Ihnen? |
+| 🇯🇵 Japanese | `ja` | こんにちは、お元気ですか？ |
+| 🇳🇴 Norwegian | `no` | Hei, hvordan har du det? |
+| 🇸🇪 Swedish | `sv` | Hej, hur mår du? |
+| 🇩 Danish | `da` | Hej, hvordan har du det? |
+| 🇳🇱 Dutch | `nl` | Hallo, hoe gaat het? |
+| 🇸🇦 Arabic | `ar` | مرحبا، كيف حالك؟ |
 
-### Como usar os idiomas
+### How to Use Languages
 
-No modo **Quick TTS**, basta:
-1. **Selecionar o idioma** no menu dropdown
-2. **Digitar o texto** no idioma desejado
+In **Quick TTS mode**, simply:
+1. **Select the language** from the dropdown menu
+2. **Type your text** in the desired language
 
-**As tags expressivas** (`[laughter]`, `[sigh]`, etc.) funcionam em **qualquer idioma**!
+**Expressive tags** (`[laughter]`, `[sigh]`, etc.) work in **any language**!
 
 ---
 
-## 🎭 Tags Expressivas
+## 🎭 Expressive Tags
 
-Adicione emoções e efeitos sonoros ao seu texto:
+Add emotions and sound effects to your text:
 
-| Tag | Efeito |
+| Tag | Effect |
 |---|---|
-| `[laughter]` | Risada |
-| `[sigh]` | Suspiro |
-| `[whisper]` | Sussurro |
-| `[confirmation-en]` | Confirmação (en) |
-| `[question-en]` | Pergunta (en) |
-| `[question-ah]` | Pergunta (ah) |
-| `[question-oh]` | Pergunta (oh) |
-| `[surprise-wa]` | Surpresa (wa) |
-| `[surprise-ah]` | Surpresa (ah) |
-| `[surprise-yo]` | Surpresa (yo) |
-| `[dissatisfaction-hnn]` | Insatisfação |
+| `[laughter]` | Laughter |
+| `[sigh]` | Sigh |
+| `[whisper]` | Whisper |
+| `[confirmation-en]` | Confirmation (en) |
+| `[question-en]` | Question (en) |
+| `[question-ah]` | Question (ah) |
+| `[question-oh]` | Question (oh) |
+| `[surprise-wa]` | Surprise (wa) |
+| `[surprise-ah]` | Surprise (ah) |
+| `[surprise-yo]` | Surprise (yo) |
+| `[dissatisfaction-hnn]` | Dissatisfaction |
 
-**Exemplo:**
+**Example:**
 ```
-[laughter] Olá! Que dia lindo! [sigh] Estou muito feliz hoje.
+[laughter] Hello! What a beautiful day! [sigh] I am so happy today.
 ```
 
 ---
 
-## 🔌 API REST
+## 🔌 REST API
 
-O sistema expõe uma API para integração com outros aplicativos.
+The system exposes a REST API for integration with other applications.
 
-### Status do Sistema
+### System Status
 ```
 GET http://localhost:8081/api/status
 ```
 
-**Resposta:**
+**Response:**
 ```json
 {
   "status": "online",
@@ -182,17 +188,17 @@ GET http://localhost:8081/api/status
 }
 ```
 
-### Gerar Áudio
+### Generate Audio
 ```
 POST http://localhost:8081/api/generate
 Content-Type: application/json
 ```
 
-**Corpo da requisição:**
+**Request body:**
 ```json
 {
-  "text": "Olá mundo, como vai você?",
-  "language": "pt",
+  "text": "Hello world, how are you?",
+  "language": "en",
   "mode": "auto",
   "num_steps": 20,
   "speed": 1.0,
@@ -200,25 +206,25 @@ Content-Type: application/json
 }
 ```
 
-**Modos disponíveis:**
-| Modo | Descrição |
+**Available modes:**
+| Mode | Description |
 |---|---|
-| `auto` | Síntese automática (Quick TTS) |
-| `instruct` / `design` | Design de voz com prompt |
-| `clone` | Clonagem de voz |
+| `auto` | Automatic synthesis (Quick TTS) |
+| `instruct` / `design` | Voice design with prompt |
+| `clone` | Voice cloning |
 
-**Parâmetros para clonagem:**
+**Parameters for cloning:**
 ```json
 {
-  "text": "Texto para sintetizar",
-  "language": "pt",
+  "text": "Text to synthesize",
+  "language": "en",
   "mode": "clone",
   "ref_audio": "BASE64_AUDIO_STRING",
-  "ref_text": "Transcript do áudio de referência"
+  "ref_text": "Transcript of reference audio"
 }
 ```
 
-**Resposta:**
+**Response:**
 ```json
 {
   "success": true,
@@ -233,115 +239,116 @@ Content-Type: application/json
 
 ---
 
-## ⚙️ Configurações
+## ⚙️ Settings
 
-### Qualidade vs Velocidade
-| Steps | Qualidade | Velocidade | Uso |
+### Quality vs Speed
+| Steps | Quality | Speed | Use Case |
 |---|---|---|---|
-| 16 | Rápida | ⚡⚡ | Testes, protótipos |
-| 20 | Balanceada | ⚡⚡ | Uso diário (padrão) |
-| 32 | Alta | ⚡ | Produção, qualidade máximo |
+| 16 | Fast | ⚡⚡ | Testing, prototypes |
+| 20 | Balanced | ⚡⚡ | Daily use (default) |
+| 32 | High | ⚡ | Production, maximum quality |
 
-### Velocidade do Áudio
-- **0.5x** - Muito lento
-- **1.0x** - Normal (padrão)
-- **2.0x** - Muito rápido
+### Audio Speed
+- **0.5x** - Very slow
+- **1.0x** - Normal (default)
+- **2.0x** - Very fast
 
-### Duração Fixa
-- **0** - Automático (recomendado)
-- **1-30** - Duração fixa em segundos
+### Fixed Duration
+- **0** - Automatic (recommended)
+- **1-30** - Fixed duration in seconds
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 EvoOmniVoice/
-├── install.bat          ← Instalar o sistema
-├── start.bat            ← Iniciar o sistema
-├── server.py            ← Servidor FastAPI
-├── index.html           ← Interface web
-├── doc.html             ← Documentação
-├── image.png            ← Screenshot da interface
-├── README.md            ← Este arquivo
-├── .gitignore           ← Arquivos ignorados pelo git
-├── bin/                 ← Binários portáteis (baixados automaticamente)
-└── venv/                ← Ambiente virtual (criado automaticamente)
+├── install.bat          ← Install the system
+├── start.bat            ← Start the system
+├── server.py            ← FastAPI server
+├── index.html           ← Web interface
+├── doc.html             ← Documentation
+├── image.png            ← Interface screenshot
+├── README.md            ← This file
+├── .gitignore           ← Files ignored by git
+├── bin/                 ← Portable binaries (downloaded automatically)
+└── venv/                ← Virtual environment (created automatically)
 ```
 
 ---
 
-## ❓ Problemas Comuns
+## ❓ Common Problems
 
-### "Espaço insuficiente"
-Libere pelo menos 8 GB de espaço em disco e tente novamente.
+### "Insufficient space"
+Free up at least 8 GB of disk space and try again.
 
-### "Falha ao baixar"
-Verifique sua conexão com a internet. O instalador precisa baixar:
+### "Download failed"
+Check your internet connection. The installer needs to download:
 - Python (~25 MB)
 - FFmpeg (~70 MB)
 - PyTorch (~200 MB - 2 GB)
-- OmniVoice e bibliotecas (~1 GB)
+- OmniVoice and libraries (~1 GB)
 
-### "GPU não detectada"
-Sem problema! O sistema funciona em CPU, apenas será mais lento.
+### "GPU not detected"
+No problem! The system works on CPU, just slower.
 
-### "Modelo demora na primeira vez"
-É normal! O modelo OmniVoice será baixado (~4-5 GB). Nas próximas vezes será rápido.
+### "Model takes long on first run"
+Normal! The OmniVoice model will be downloaded (~4-5 GB). Subsequent runs will be fast.
 
-### "Porta 8081 já em uso"
-Feche outros programas usando a porta 8081 ou edite `server.py` para usar outra porta.
+### "Port 8081 already in use"
+Close other programs using port 8081 or edit `server.py` to use a different port.
 
-### "Erro ao gerar áudio"
-- Verifique se o servidor está rodando
-- Tente usar menos texto (máximo recomendado: 500 caracteres)
-- Reinicie o sistema fechando e abrindo `start.bat`
-
----
-
-## 💡 Dicas
-
-1. **Primeiro uso:** Aguarde o modelo ser baixado completamente
-2. **Qualidade:** Use 32 steps para melhor qualidade, 16 para mais velocidade
-3. **Clonagem:** Use áudio limpo, sem ruído de fundo
-4. **Expressões:** Tags como `[laughter]` funcionam melhor em inglês
-5. **Português:** O modelo suporta português nativamente, basta selecionar "Portuguese"
+### "Error generating audio"
+- Check if the server is running
+- Try using less text (recommended maximum: 500 characters)
+- Restart the system by closing and reopening `start.bat`
 
 ---
 
-## 📊 Performance Estimada
+## 💡 Tips
 
-| Hardware | Velocidade de Geração |
+1. **First use:** Wait for the model to fully download
+2. **Quality:** Use 32 steps for better quality, 16 for faster speed
+3. **Cloning:** Use clean audio without background noise
+4. **Expressions:** Tags like `[laughter]` work best in English
+5. **Portuguese:** The model natively supports Portuguese, just select "Portuguese"
+
+---
+
+## 📊 Estimated Performance
+
+| Hardware | Generation Speed |
 |---|---|
-| RTX 4090 | ~50 caracteres/segundo |
-| RTX 3070 | ~30 caracteres/segundo |
-| RTX 2060 | ~20 caracteres/segundo |
-| CPU (i7) | ~5 caracteres/segundo |
+| NVIDIA RTX 4090 | ~50 chars/second |
+| NVIDIA RTX 3070 | ~30 chars/second |
+| NVIDIA RTX 2060 | ~20 chars/second |
+| NVIDIA GTX 1060 | ~10 chars/second |
+| CPU (Intel i5) | ~5 chars/second |
 
-> *Valores aproximados para texto em inglês com 20 steps*
-
----
-
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Sinta-se à vontade para:
-- Reportar bugs
-- Sugerir melhorias
-- Enviar pull requests
+> *Approximate values for English text with 20 steps*
 
 ---
 
-## 📄 Licença
+## 🤝 Contributing
 
-Este projeto é distribuído para fins educacionais e de pesquisa.
+Contributions are welcome! Feel free to:
+- Report bugs
+- Suggest improvements
+- Submit pull requests
+
+---
+
+## 📄 License
+
+This project is distributed for educational and research purposes.
 
 ---
 
 ## 🔗 Links
 
-- [Repositório GitHub](https://github.com/marksjr/EvoOmniVoice)
-- [Modelo OmniVoice Original](https://github.com/k2-fsa/OmniVoice)
+- [GitHub Repository](https://github.com/marksjr/EvoOmniVoice)
+- [Original OmniVoice Model](https://github.com/k2-fsa/OmniVoice)
 
 ---
 
-**Desenvolvido com ❤️ para ser simples, portátil e poderoso**
+**Built with ❤️ to be simple, portable, and powerful**
