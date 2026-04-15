@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evo OmniVoice - Advanced TTS</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --input-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 90%;
+            background: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .nav-link {
+            position: absolute;
+            top: 35px;
+            right: 30px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--text-main);
+        }
+
+        .tabs {
+            display: flex;
+            background: #151e2e;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: var(--text-main);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: var(--surface-color);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .field-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        textarea, select, input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus, select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tag-btn {
+            background: var(--border-color);
+            color: var(--text-main);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .tag-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary-color);
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-generate:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-generate:disabled {
+            background: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .loading-text {
+            text-align: center;
+            margin-top: 16px;
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 14px;
+            display: none;
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 24px;
+            background: var(--input-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+
+        .metrics {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metrics span b {
+            color: var(--text-main);
+            margin-left: 4px;
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+        }
+        
+        audio::-webkit-media-controls-panel {
+            background-color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <a href="doc.html" class="nav-link">Documentation</a>
+        <h1>Evo OmniVoice</h1>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="setMode('quick', this)">Quick TTS</div>
+        <div class="tab" onclick="setMode('design', this)">Voice Design</div>
+        <div class="tab" onclick="setMode('clone', this)">Voice Cloning</div>
+    </div>
+
+    <div class="content">
+        <div class="field-group">
+            <label>Text to Synthesize & Expressive Tags</label>
+            <div class="tags">
+                <button class="tag-btn" onclick="insertTag('[laughter]')">Laughter</button>
+                <button class="tag-btn" onclick="insertTag('[sigh]')">Sigh</button>
+                <button class="tag-btn" onclick="insertTag('[whisper]')">Whisper</button>
+                <button class="tag-btn" onclick="insertTag('[confirmation-en]')">Confirm</button>
+                <button class="tag-btn" onclick="insertTag('[question-en]')">Question (en)</button>
+                <button class="tag-btn" onclick="insertTag('[question-ah]')">Question (ah)</button>
+                <button class="tag-btn" onclick="insertTag('[question-oh]')">Question (oh)</button>
+                <button class="tag-btn" onclick="insertTag('[surprise-wa]')">Surprise (wa)</button>
+                <button class="tag-btn" onclick="insertTag('[surprise-ah]')">Surprise (ah)</button>
+                <button class="tag-btn" onclick="insertTag('[surprise-yo]')">Surprise (yo)</button>
+                <button class="tag-btn" onclick="insertTag('[dissatisfaction-hnn]')">Dissatisfaction</button>
+            </div>
+            <textarea id="mainText" placeholder="Enter the text... You can also use CMU phonemes like [B EY1 S]"></textarea>
+            <div style="text-align: right; font-size: 12px; color: var(--text-muted); margin-top: 5px;">
+                Characters: <span id="charCountDisplay">0</span>
+            </div>
+        </div>
+
+        <div id="quick" class="section active">
+            <div class="field-group">
+                <label>Language</label>
+                <select id="quickLang">
+                    <option value="en">English</option>
+                    <option value="de">German</option>
+                    <option value="fr">French</option>
+                    <option value="ja">Japanese</option>
+                    <option value="es">Spanish</option>
+                    <option value="pt">Portuguese</option>
+                    <option value="no">Norwegian</option>
+                    <option value="sv">Swedish</option>
+                    <option value="da">Danish</option>
+                    <option value="nl">Dutch</option>
+                    <option value="ar">Arabic</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="design" class="section">
+            <div class="field-group">
+                <label>Voice Description (Prompt)</label>
+                <input type="text" id="instructText" placeholder="e.g., female, young adult, british accent, low pitch">
+                
+                <div style="margin-top: 15px; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: #0b1121;">
+                    <div style="font-size: 13px; color: var(--primary-color); font-weight: 600; margin-bottom: 8px;">Quick Select Valid Attributes:</div>
+                    <div style="font-size: 11px; color: #64748b; margin-bottom: 12px; line-height: 1.3;">
+                        Note: You can only select <b>one tag per category</b>. These are all the officially supported English tags by the OmniVoice AI model. Selecting options like "baby" or "adult" will cause a server error as they are not in the AI's core dictionary.
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;"><b>Gender:</b></div>
+                    <div class="tags" style="margin-bottom: 12px;">
+                        <button class="tag-btn" onclick="insertDesignTag('male')">Male</button>
+                        <button class="tag-btn" onclick="insertDesignTag('female')">Female</button>
+                    </div>
+
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;"><b>Age:</b></div>
+                    <div class="tags" style="margin-bottom: 12px;">
+                        <button class="tag-btn" onclick="insertDesignTag('child')">Child</button>
+                        <button class="tag-btn" onclick="insertDesignTag('teenager')">Teenager</button>
+                        <button class="tag-btn" onclick="insertDesignTag('young adult')">Young Adult</button>
+                        <button class="tag-btn" onclick="insertDesignTag('middle-aged')">Middle-aged</button>
+                        <button class="tag-btn" onclick="insertDesignTag('elderly')">Elderly (Old)</button>
+                    </div>
+
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;"><b>Pitch (Tone):</b></div>
+                    <div class="tags" style="margin-bottom: 12px;">
+                        <button class="tag-btn" onclick="insertDesignTag('very low pitch')">Very Low</button>
+                        <button class="tag-btn" onclick="insertDesignTag('low pitch')">Low</button>
+                        <button class="tag-btn" onclick="insertDesignTag('moderate pitch')">Moderate</button>
+                        <button class="tag-btn" onclick="insertDesignTag('high pitch')">High</button>
+                        <button class="tag-btn" onclick="insertDesignTag('very high pitch')">Very High</button>
+                    </div>
+
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;"><b>Accents:</b></div>
+                    <div class="tags" style="margin-bottom: 12px;">
+                        <button class="tag-btn" onclick="insertDesignTag('american accent')">American</button>
+                        <button class="tag-btn" onclick="insertDesignTag('australian accent')">Australian</button>
+                        <button class="tag-btn" onclick="insertDesignTag('british accent')">British</button>
+                        <button class="tag-btn" onclick="insertDesignTag('canadian accent')">Canadian</button>
+                        <button class="tag-btn" onclick="insertDesignTag('chinese accent')">Chinese</button>
+                        <button class="tag-btn" onclick="insertDesignTag('indian accent')">Indian</button>
+                        <button class="tag-btn" onclick="insertDesignTag('japanese accent')">Japanese</button>
+                        <button class="tag-btn" onclick="insertDesignTag('korean accent')">Korean</button>
+                        <button class="tag-btn" onclick="insertDesignTag('portuguese accent')">Portuguese</button>
+                        <button class="tag-btn" onclick="insertDesignTag('russian accent')">Russian</button>
+                    </div>
+
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;"><b>Styles:</b></div>
+                    <div class="tags" style="margin-bottom: 4px;">
+                        <button class="tag-btn" onclick="insertDesignTag('whisper')">Whisper</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="clone" class="section">
+            <div class="field-group">
+                <label>Reference Audio (3-10 seconds)</label>
+                <input type="file" id="refAudioFile" accept="audio/*">
+            </div>
+            <div class="field-group">
+                <label>Reference Transcript (Optional but recommended)</label>
+                <input type="text" id="refText" placeholder="Exact transcript of the reference audio">
+            </div>
+        </div>
+
+        <div class="grid-3 field-group">
+            <div class="slider-container">
+                <div class="slider-header">
+                    <label style="margin:0;">Speed</label>
+                    <span id="speedVal" style="font-size: 13px; color: var(--text-main);">1.0x</span>
+                </div>
+                <input type="range" id="speed" min="0.5" max="2.0" step="0.1" value="1.0">
+            </div>
+            <div class="slider-container">
+                <label>Quality (Steps)</label>
+                <select id="numSteps">
+                    <option value="16">16 (Fast)</option>
+                    <option value="20" selected>20 (Balanced)</option>
+                    <option value="32">32 (High Quality)</option>
+                </select>
+            </div>
+            <div class="slider-container">
+                <label>Duration (s) [0 = Auto]</label>
+                <input type="number" id="duration" min="0" max="30" step="0.5" value="0" placeholder="e.g. 5.5">
+            </div>
+        </div>
+
+        <button class="btn-generate" id="genBtn">Generate Audio</button>
+        <div id="loadingMsg" class="loading-text">
+            Processing audio... Please wait. <br>
+            <span style="font-size: 12px; opacity: 0.8;">Elapsed Time: <span id="timerDisplay">0.0</span>s</span>
+        </div>
+
+        <div class="result-box" id="resultArea">
+            <div class="metrics">
+                <span>Characters: <b id="resChars">0</b></span>
+                <span>Time: <b id="resTime">0s</b></span>
+                <span>Device: <b id="resDev">GPU</b></span>
+            </div>
+            <audio id="audioPlayer" controls></audio>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = "http://localhost:8081";
+    let currentMode = "auto";
+    let base64Audio = null;
+    let timerInterval = null;
+
+    function setMode(mode, element) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        
+        element.classList.add('active');
+        document.getElementById(mode).classList.add('active');
+        
+        currentMode = mode === 'quick' ? 'auto' : mode;
+    }
+
+    function insertTag(tag) {
+        const txt = document.getElementById('mainText');
+        const start = txt.selectionStart;
+        const end = txt.selectionEnd;
+        txt.value = txt.value.substring(0, start) + tag + txt.value.substring(end);
+        document.getElementById('charCountDisplay').innerText = txt.value.length;
+        txt.focus();
+    }
+
+    function insertDesignTag(tag) {
+        const input = document.getElementById('instructText');
+        if (input.value.trim() === '') {
+            input.value = tag;
+        } else {
+            // Check if it already has a trailing comma or space to format nicely
+            if (input.value.trim().endsWith(',')) {
+                input.value += ' ' + tag;
+            } else {
+                input.value += ', ' + tag;
+            }
+        }
+        input.focus();
+    }
+
+    document.getElementById('mainText').addEventListener('input', (e) => {
+        document.getElementById('charCountDisplay').innerText = e.target.value.length;
+    });
+
+    document.getElementById('speed').addEventListener('input', (e) => {
+        document.getElementById('speedVal').innerText = parseFloat(e.target.value).toFixed(1) + "x";
+    });
+
+    document.getElementById('refAudioFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => { base64Audio = reader.result; };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('genBtn').addEventListener('click', async () => {
+        const text = document.getElementById('mainText').value;
+        if (!text.trim()) {
+            alert("Please enter some text to synthesize.");
+            return;
+        }
+
+        const btn = document.getElementById('genBtn');
+        const loading = document.getElementById('loadingMsg');
+        const resultArea = document.getElementById('resultArea');
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        btn.disabled = true;
+        btn.innerText = "Generating...";
+        loading.style.display = "block";
+        resultArea.style.display = "none";
+        
+        let startTime = Date.now();
+        timerDisplay.innerText = "0.0";
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timerDisplay.innerText = ((Date.now() - startTime) / 1000).toFixed(1);
+        }, 100);
+
+        const payload = {
+            text: text,
+            language: document.getElementById('quickLang').value,
+            mode: currentMode,
+            instruct: document.getElementById('instructText').value || "",
+            ref_audio: base64Audio,
+            ref_text: document.getElementById('refText').value || "",
+            num_steps: parseInt(document.getElementById('numSteps').value),
+            speed: parseFloat(document.getElementById('speed').value),
+            duration: parseFloat(document.getElementById('duration').value) || 0
+        };
+
+        try {
+            const resp = await fetch(`${API_BASE}/api/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!resp.ok) {
+                const errorData = await resp.json();
+                throw new Error(errorData.detail || "Server Error");
+            }
+
+            const data = await resp.json();
+            if (data && data.success) {
+                const blob = b64toBlob(data.audio, 'audio/wav');
+                document.getElementById('audioPlayer').src = URL.createObjectURL(blob);
+                document.getElementById('resChars').innerText = data.metrics.char_count;
+                document.getElementById('resTime').innerText = data.metrics.generation_time + "s";
+                document.getElementById('resDev').innerText = data.metrics.gpu_used ? "GPU" : "CPU";
+                
+                resultArea.style.display = "block";
+                document.getElementById('audioPlayer').play();
+            }
+        } catch (e) {
+            alert("Error: " + e.message);
+        } finally {
+            if (timerInterval) clearInterval(timerInterval);
+            btn.disabled = false;
+            btn.innerText = "Generate Audio";
+            loading.style.display = "none";
+        }
+    });
+
+    function b64toBlob(b64, type) {
+        const b64Data = b64.split(',').pop();
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteArrays.push(byteCharacters.charCodeAt(i));
+        }
+        return new Blob([new Uint8Array(byteArrays)], {type: type});
+    }
+</script>
+</body>
+</html>

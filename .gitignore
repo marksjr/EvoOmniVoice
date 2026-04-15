@@ -1,0 +1,41 @@
+# Pastas pesadas (baixadas automaticamente pelo install.bat)
+venv/
+bin/
+
+# Cache e arquivos temporários
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de configuração local
+.env
+*.local
+
+# Logs
+*.log
+
+# Dados do modelo (cache do HuggingFace)
+.cache/
+huggingface/
+
+# Arquivos temporários de download
+python_portable.zip
+ffmpeg.zip
+
+# IDE
+.vscode/
+.idea/
+
+# Node modules (se houver)
+node_modules/

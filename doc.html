@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evo OmniVoice - Documentation</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --code-bg: #0f172a;
+        }
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6; 
+            color: var(--text-main); 
+            max-width: 90%; 
+            margin: 0 auto; 
+            padding: 40px 20px; 
+            background: var(--bg-color); 
+        }
+        .card { 
+            background: var(--surface-color); 
+            padding: 40px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+        }
+        h1 { color: #ffffff; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px; font-size: 32px; }
+        h2 { color: var(--primary-color); margin-top: 40px; border-left: 4px solid var(--primary-color); padding-left: 15px; font-size: 24px; }
+        code { background: var(--border-color); padding: 3px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.9em; color: #e2e8f0; }
+        pre { background: var(--code-bg); color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: 14px; border: 1px solid var(--border-color); }
+        .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .feature-item { background: var(--bg-color); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .feature-item b { color: var(--primary-color); font-size: 16px; display: block; margin-bottom: 8px; }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .tag { background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--primary-color); text-decoration: none; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">&larr; Back to App</a>
+    <div class="card">
+        <h1>Evo OmniVoice Documentation</h1>
+        <p>Evo OmniVoice is a high-performance, multilingual TTS system utilizing the advanced capabilities of the OmniVoice architecture.</p>
+
+        <h2>1. Voice Generation Modes</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <b>Auto (Quick TTS)</b>
+                Generates speech using a high-quality automatic voice. Best for simple and fast text synthesis across multiple languages.
+            </div>
+            <div class="feature-item">
+                <b>Voice Design (Instruct)</b>
+                Create unique voices using descriptive text prompts. 
+                <br><br><i>Example: "female, young adult, british accent, low pitch"</i>
+                <br><br>
+                <span style="font-size: 12px; opacity: 0.8;">
+                <b>Valid English Attributes:</b> male, female, child, teenager, young adult, middle-aged, elderly, whisper, very low pitch, low pitch, moderate pitch, high pitch, very high pitch, american accent, australian accent, british accent, canadian accent, chinese accent, indian accent, japanese accent, korean accent, portuguese accent, russian accent.
+                </span>
+            </div>
+            <div class="feature-item">
+                <b>Voice Cloning (Zero-Shot)</b>
+                Upload a 3 to 10-second reference audio file to clone any voice instantly, without any model training required.
+            </div>
+            <div class="feature-item">
+                <b>Expressive Tags</b>
+                Insert emotion and action tags directly into the text for realistic effects and non-verbal cues.
+            </div>
+        </div>
+
+        <h2>2. Advanced API (FastAPI)</h2>
+        <p><b>Endpoint:</b> <code>POST /api/generate</code></p>
+        <pre>
+{
+  "text": "Hello! [laughter] How can I help you today?",
+  "language": "en", // en, de, fr, ja, es, pt, no, sv, da, nl, ar
+  "mode": "instruct",  // options: "auto", "clone", "instruct", "design"
+  "instruct": "male, deep voice, calm",
+  "ref_audio": "BASE64_STRING", // Required for clone mode
+  "ref_text": "Optional transcript of reference", // Optional for clone mode
+  "num_steps": 20, // 16 (Fast) to 32 (HQ)
+  "speed": 1.0,    // 0.5 to 2.0
+  "duration": 0    // Fixed length in seconds (0 = auto)
+}</pre>
+
+        <h2>3. Non-Verbal Symbols (Emotions)</h2>
+        <p>Insert the following tags into your text for realistic non-verbal sounds and effects:</p>
+        <div class="tag-list">
+            <span class="tag">[laughter]</span>
+            <span class="tag">[sigh]</span>
+            <span class="tag">[whisper]</span>
+            <span class="tag">[confirmation-en]</span>
+            <span class="tag">[question-en]</span>
+            <span class="tag">[surprise-wa]</span>
+            <span class="tag">[surprise-yo]</span>
+            <span class="tag">[dissatisfaction-hnn]</span>
+        </div>
+
+        <h2>4. Multilingual Support</h2>
+        <p>Evo OmniVoice fully supports the following languages natively via the API:</p>
+        <ul>
+            <li>English (en)</li>
+            <li>German (de)</li>
+            <li>French (fr)</li>
+            <li>Japanese (ja)</li>
+            <li>Spanish (es)</li>
+            <li>Portuguese (pt)</li>
+            <li>Norwegian (no)</li>
+            <li>Swedish (sv)</li>
+            <li>Danish (da)</li>
+            <li>Dutch (nl)</li>
+            <li>Arabic (ar)</li>
+        </ul>
+
+        <div style="margin-top: 50px; text-align: center; font-size: 14px; color: var(--text-muted); padding-top: 20px; border-top: 1px solid var(--border-color);">
+            Evo OmniVoice System
+        </div>
+    </div>
+</body>
+</html>x solid var(--border-color);">
+            Evo OmniVoice System
+        </div>
+    </div>
+</body>
+</html>
