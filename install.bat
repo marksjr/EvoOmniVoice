@@ -89,9 +89,15 @@ if exist "%PYTHON_DIR%\python.exe" (
 :: Download and install portable Python
 echo [INFO] Python not found. Downloading portable version (3.11)...
 echo.
-echo  Downloading portable Python (25 MB)...
+echo  Downloading portable Python...
 
-powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip' -OutFile 'python_portable.zip' -UseBasicParsing"
+:: Use curl if available (it is in Windows 10/11), otherwise fallback to powershell
+where curl >nul 2>&1
+if !errorlevel! equ 0 (
+    curl -L "https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip" -o "python_portable.zip"
+) else (
+    powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip' -OutFile 'python_portable.zip' -UseBasicParsing"
+)
 
 if not exist "python_portable.zip" (
     echo [ERROR] Failed to download Python. Check your internet connection.
@@ -102,18 +108,19 @@ if not exist "python_portable.zip" (
 echo  Extracting Python...
 powershell -Command "Expand-Archive -Path 'python_portable.zip' -DestinationPath '%PYTHON_DIR%' -Force" >nul 2>&1
 
-:: Validate Python was extracted successfully
-if not exist "%PYTHON_DIR%\python.exe" (
-    echo [ERROR] Failed to extract Python. ZIP file may be corrupted.
-    del python_portable.zip
-    pause
-    exit /b 1
-)
+:: Since embed version lacks venv, we need to add the Lib folder or use a trick
+:: For maximum portability, we'll configure the ._pth file correctly
+:: and download get-pip.py
 
-del python_portable.zip
+if exist "python_portable.zip" del python_portable.zip
 
 echo  Configuring pip...
-powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile '%PYTHON_DIR%\get-pip.py' -UseBasicParsing" >nul 2>&1
+where curl >nul 2>&1
+if !errorlevel! equ 0 (
+    curl -L "https://bootstrap.pypa.io/get-pip.py" -o "%PYTHON_DIR%\get-pip.py"
+) else (
+    powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile '%PYTHON_DIR%\get-pip.py' -UseBasicParsing" >nul 2>&1
+)
 
 :: Validate get-pip.py was downloaded
 if not exist "%PYTHON_DIR%\get-pip.py" (
@@ -160,7 +167,12 @@ echo [INFO] FFmpeg not found. Downloading...
 echo.
 echo  Downloading FFmpeg (70 MB)...
 
-powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile 'ffmpeg.zip' -UseBasicParsing"
+where curl >nul 2>&1
+if !errorlevel! equ 0 (
+    curl -L "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" -o "ffmpeg.zip"
+) else (
+    powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip' -OutFile 'ffmpeg.zip' -UseBasicParsing"
+)
 
 if not exist "ffmpeg.zip" (
     echo [ERROR] Failed to download FFmpeg. Check your internet connection.
