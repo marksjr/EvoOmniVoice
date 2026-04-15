@@ -32,28 +32,32 @@ echo [STEP 1/5] Checking disk space...
 
 :: Get drive letter for the current path
 set "TARGET_DRIVE=%~d0"
+set "DRIVE_LETTER=%TARGET_DRIVE:~0,1%"
 
-:: Use a more robust PowerShell script to detect free space
-for /f "tokens=*" %%i in ('powershell -Command "$drive = '%TARGET_DRIVE%'.Replace(':', ''); $free = 0; try { $d = Get-PSDrive $drive -ErrorAction SilentlyContinue; if ($d -and $d.Free) { $free = $d.Free } else { $d = Get-CimInstance Win32_LogicalDisk -Filter \"DeviceID='$drive:'\" -ErrorAction SilentlyContinue; if ($d) { $free = $d.FreeSpace } else { $v = Get-Volume -DriveLetter $drive -ErrorAction SilentlyContinue; if ($v) { $free = $v.SizeRemaining } } } } catch {}; [math]::Floor($free / 1GB)" 2^>^&1') do set "FREE_SPACE_GB=%%i"
+:: Default to 999 to avoid blocking if detection fails
+set "FREE_SPACE_GB=999"
 
-:: If detection fails or returns non-numeric, use a safe default
-echo !FREE_SPACE_GB! | findstr /r "^[0-9][0-9]*$" >nul
-if !errorlevel! neq 0 (
-    echo [WARN] Unable to accurately determine free space (detected: "!FREE_SPACE_GB!").
-    echo [INFO] Assuming sufficient space and continuing...
-    set "FREE_SPACE_GB=999"
-) else (
-    echo [OK] Detected free space: !FREE_SPACE_GB! GB
-    echo [OK] Required space: %REQUIRED_SPACE_GB% GB
+:: Use a temporary PS1 file to avoid batch quote escaping hell
+echo $d = '%DRIVE_LETTER%'; try { $f = (Get-PSDrive $d -ErrorAction SilentlyContinue).Free; if (-not $f) { $f = (Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='$($d):'" -ErrorAction SilentlyContinue).FreeSpace }; if ($f) { [math]::Floor($f / 1GB) } else { '999' } } catch { '999' } > check_space.ps1
+
+for /f "delims=" %%i in ('powershell -ExecutionPolicy Bypass -File check_space.ps1 2^>^&1') do (
+    set "RESULT=%%i"
+    rem Check if the result is a valid number
+    echo !RESULT! | findstr /r "^[0-9][0-9]*$" >nul
+    if !errorlevel! equ 0 set "FREE_SPACE_GB=!RESULT!"
 )
+del check_space.ps1
 
+echo [INFO] Detected free space: !FREE_SPACE_GB! GB (Required: %REQUIRED_SPACE_GB% GB)
+
+:: Only block if we are CERTAIN space is low
 if !FREE_SPACE_GB! LSS %REQUIRED_SPACE_GB% (
     echo.
     echo [ERROR] Insufficient disk space!
     echo Required: %REQUIRED_SPACE_GB% GB
     echo Available: !FREE_SPACE_GB! GB
     echo.
-    echo If you believe this is an error, you can edit this script to skip the check.
+    echo Please free up space or edit this script to skip the check.
     pause
     exit /b 1
 )
@@ -214,21 +218,21 @@ python -m pip install --upgrade pip --quiet
 
 :: Detect GPU for PyTorch
 where nvidia-smi >nul 2>&1
-if !errorlevel! equ 0 (
-    echo [INFO] NVIDIA GPU detected! Installing CUDA version for faster performance...
-    echo  Downloading PyTorch CUDA (~2 GB) - please wait...
+if not errorlevel 1 (
+    echo [INFO] NVIDIA GPU detected. Installing CUDA version for faster performance...
+    echo [INFO] Downloading PyTorch CUDA - please wait...
     pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 ) else (
     echo [INFO] No GPU detected. Installing CPU version...
-    echo  Downloading PyTorch CPU (~200 MB) - please wait...
+    echo [INFO] Downloading PyTorch CPU - please wait...
     pip install torch torchaudio
 )
 
 echo.
-echo  Installing OmniVoice and other dependencies...
+echo [INFO] Installing dependencies and libraries...
 pip install fastapi uvicorn omnivoice numpy soundfile python-multipart
 
-if !errorlevel! neq 0 (
+if errorlevel 1 (
     echo.
     echo [ERROR] Failed to install dependencies!
     echo Check your internet connection.
