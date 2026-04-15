@@ -1,4 +1,4 @@
-# 🎙️ Evo OmniVoice - AI Text-to-Speech
+# 🎙️ Evo OmniVoice - AI Text-to-Speech - For Windows
 
 High-quality **Text-to-Speech (TTS)** system powered by AI, supporting **11 languages**, **voice cloning**, and **emotional expressions**.
 
