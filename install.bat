@@ -89,14 +89,14 @@ if exist "%PYTHON_DIR%\python.exe" (
 :: Download and install portable Python
 echo [INFO] Python not found. Downloading portable version (3.11)...
 echo.
-echo  Downloading portable Python...
+echo  Downloading full portable Python (with venv)...
 
 :: Use curl if available (it is in Windows 10/11), otherwise fallback to powershell
 where curl >nul 2>&1
 if !errorlevel! equ 0 (
-    curl -L "https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip" -o "python_portable.zip"
+    curl -L "https://www.nuget.org/api/v2/package/python/3.11.9" -o "python_portable.zip"
 ) else (
-    powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.python.org/ftp/python/3.11.9/python-3.11.9-embed-amd64.zip' -OutFile 'python_portable.zip' -UseBasicParsing"
+    powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://www.nuget.org/api/v2/package/python/3.11.9' -OutFile 'python_portable.zip' -UseBasicParsing"
 )
 
 if not exist "python_portable.zip" (
@@ -106,39 +106,24 @@ if not exist "python_portable.zip" (
 )
 
 echo  Extracting Python...
-powershell -Command "Expand-Archive -Path 'python_portable.zip' -DestinationPath '%PYTHON_DIR%' -Force" >nul 2>&1
+if exist "%BIN_DIR%\python_temp" rmdir /s /q "%BIN_DIR%\python_temp"
+powershell -Command "Expand-Archive -Path 'python_portable.zip' -DestinationPath '%BIN_DIR%\python_temp' -Force" >nul 2>&1
 
-:: Since embed version lacks venv, we need to add the Lib folder or use a trick
-:: For maximum portability, we'll configure the ._pth file correctly
-:: and download get-pip.py
-
-if exist "python_portable.zip" del python_portable.zip
-
-echo  Configuring pip...
-where curl >nul 2>&1
-if !errorlevel! equ 0 (
-    curl -L "https://bootstrap.pypa.io/get-pip.py" -o "%PYTHON_DIR%\get-pip.py"
-) else (
-    powershell -Command "$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile '%PYTHON_DIR%\get-pip.py' -UseBasicParsing" >nul 2>&1
-)
-
-:: Validate get-pip.py was downloaded
-if not exist "%PYTHON_DIR%\get-pip.py" (
-    echo [ERROR] Failed to download pip installer. Check your internet connection.
+:: Validate Python was extracted successfully
+if not exist "%BIN_DIR%\python_temp\tools\python.exe" (
+    echo [ERROR] Failed to extract Python. ZIP file may be corrupted.
+    del python_portable.zip
     pause
     exit /b 1
 )
 
-"%PYTHON_DIR%\python.exe" "%PYTHON_DIR%\get-pip.py" --quiet
-if !errorlevel! neq 0 (
-    echo [ERROR] Failed to install pip!
-    pause
-    exit /b 1
-)
-del "%PYTHON_DIR%\get-pip.py"
+echo  Configuring portable environment...
+:: Move the actual python environment out of the tools folder
+robocopy "%BIN_DIR%\python_temp\tools" "%PYTHON_DIR%" /E /MOVE >nul 2>&1
 
-:: Enable import site in ._pth file (works with any Python 3.x version)
-powershell -Command "$pthFile = Get-ChildItem '%PYTHON_DIR%\python*._pth' | Select-Object -First 1; if ($pthFile) { (Get-Content $pthFile.FullName) -replace '#import site', 'import site' | Set-Content $pthFile.FullName }" >nul 2>&1
+:: Cleanup
+rmdir /s /q "%BIN_DIR%\python_temp"
+del python_portable.zip
 
 set "PY_CMD=%PYTHON_DIR%\python.exe"
 echo [OK] Portable Python installed successfully!
