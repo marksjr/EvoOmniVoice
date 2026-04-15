@@ -30,58 +30,35 @@ pause
 echo.
 echo [STEP 1/5] Checking disk space...
 
-:: Get drive letter without colon for PowerShell Get-Volume
-set "DRIVE_LETTER=%~d0"
-set "DRIVE_LETTER=!DRIVE_LETTER:~0,1!"
+:: Get drive letter for the current path
+set "TARGET_DRIVE=%~d0"
 
-:: Try multiple methods to check disk space (fallback if one fails)
-set "FREE_SPACE="
+:: Use a more robust PowerShell script to detect free space
+for /f "tokens=*" %%i in ('powershell -Command "$drive = '%TARGET_DRIVE%'.Replace(':', ''); $free = 0; try { $d = Get-PSDrive $drive -ErrorAction SilentlyContinue; if ($d -and $d.Free) { $free = $d.Free } else { $d = Get-CimInstance Win32_LogicalDisk -Filter \"DeviceID='$drive:'\" -ErrorAction SilentlyContinue; if ($d) { $free = $d.FreeSpace } else { $v = Get-Volume -DriveLetter $drive -ErrorAction SilentlyContinue; if ($v) { $free = $v.SizeRemaining } } } } catch {}; [math]::Floor($free / 1GB)" 2^>^&1') do set "FREE_SPACE_GB=%%i"
 
-:: Method 1: PowerShell Get-Volume (most reliable on Windows 10/11)
-for /f "tokens=*" %%i in ('powershell -Command "try { $v = Get-Volume -DriveLetter '!DRIVE_LETTER!'; if ($v) { [math]::Floor($v.SizeRemaining / 1GB) } else { throw } } catch { Write-Host 'ERROR' }" 2^>^&1') do set FREE_SPACE=%%i
-
-:: Validate result
-if "!FREE_SPACE!"=="ERROR" (
-    echo [WARN] PowerShell Get-Volume failed, trying alternative method...
-    set "FREE_SPACE="
-    
-    :: Method 2: WMIC diskdrive (works on older Windows)
-    for /f "tokens=*" %%i in ('wmic logicaldisk where "DeviceID='%~d0'" get FreeSpace /value 2^>^&1 ^| find "FreeSpace="') do (
-        for /f "tokens=2 delims==" %%j in ("%%i") do (
-            :: Convert bytes to GB
-            for /f "tokens=*" %%k in ('powershell -Command "[math]::Floor(%%j / 1GB)" 2^>^&1') do set FREE_SPACE=%%k
-        )
-    )
+:: If detection fails or returns non-numeric, use a safe default
+echo !FREE_SPACE_GB! | findstr /r "^[0-9][0-9]*$" >nul
+if !errorlevel! neq 0 (
+    echo [WARN] Unable to accurately determine free space (detected: "!FREE_SPACE_GB!").
+    echo [INFO] Assuming sufficient space and continuing...
+    set "FREE_SPACE_GB=999"
+) else (
+    echo [OK] Detected free space: !FREE_SPACE_GB! GB
+    echo [OK] Required space: %REQUIRED_SPACE_GB% GB
 )
 
-:: Method 3: Simple fsutil fallback
-if "!FREE_SPACE!"=="" (
-    echo [WARN] Using alternative disk check method...
-    for /f "tokens=*" %%i in ('powershell -Command "$disk = Get-PSDrive '%~d0'; [math]::Floor(($disk.Free / 1GB))" 2^>^&1') do set FREE_SPACE=%%i
-)
-
-:: Validate we got a number
-for /f "tokens=1 delims=." %%i in ("!FREE_SPACE!") do set FREE_SPACE_INT=%%i
-
-:: If still invalid, assume OK and continue (user can override if needed)
-if not defined FREE_SPACE_INT (
-    echo [WARN] Unable to determine free space accurately. Assuming sufficient space.
-    echo [INFO] Required: %REQUIRED_SPACE_GB% GB free
+if !FREE_SPACE_GB! LSS %REQUIRED_SPACE_GB% (
     echo.
-    set "FREE_SPACE_INT=999"
-) else if !FREE_SPACE_INT! LSS %REQUIRED_SPACE_GB% (
     echo [ERROR] Insufficient disk space!
+    echo Required: %REQUIRED_SPACE_GB% GB
+    echo Available: !FREE_SPACE_GB! GB
     echo.
-    echo Required space: %REQUIRED_SPACE_GB% GB
-    echo Available space: !FREE_SPACE_INT! GB (approximately)
-    echo.
-    echo Please free up disk space and try again.
-    echo.
+    echo If you believe this is an error, you can edit this script to skip the check.
     pause
     exit /b 1
 )
 
-echo [OK] Sufficient disk space: !FREE_SPACE_INT! GB available
+echo [OK] Disk space check passed.
 
 if not exist "%BIN_DIR%" mkdir "%BIN_DIR%"
 
