@@ -1,8 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 chcp 65001 >nul
-title Evo OmniVoice - Start
-color 0A
+title EVO OMNIVOICE - Start
+color 0B
 
 set "BIN_DIR=%~dp0bin"
 set "FFMPEG_DIR=%BIN_DIR%\ffmpeg"
@@ -40,7 +40,7 @@ echo.
 
 :: Start FastAPI server in separate window
 echo [INFO] Starting FastAPI server...
-start "Evo OmniVoice Server" cmd /c "cd /d "%~dp0" && call venv\Scripts\activate.bat && python server.py"
+start "EVO OMNIVOICE Server" cmd /c "cd /d "%~dp0" && call venv\Scripts\activate.bat && python server.py"
 
 :: Wait for server to be ready
 echo [INFO] Waiting for server to load models on GPU...
@@ -65,6 +65,6 @@ echo           EVO OMNIVOICE IS RUNNING
 echo ============================================================
 echo.
 echo Do not close this window! The server is running in the background.
-echo To stop the system, close the "Evo OmniVoice Server" window.
+echo To stop the system, close the "EVO OMNIVOICE Server" window.
 echo.
 pause

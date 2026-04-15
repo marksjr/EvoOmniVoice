@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-OmniVoice TTS PRO - Compatible GPU Loading
+EVO OMNIVOICE - Advanced TTS System
 """
 
 import os
@@ -23,8 +23,8 @@ SAMPLE_RATE = 24000
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Evo OmniVoice API",
-    description="REST API for OmniVoice Text-to-Speech with voice cloning and design capabilities",
+    title="EVO OMNIVOICE API",
+    description="REST API for EVO OMNIVOICE Text-to-Speech with voice cloning and design capabilities",
     version="1.0.0"
 )
 

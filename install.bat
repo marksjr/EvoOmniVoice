@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 chcp 65001 >nul
-title OmniVoice - Portable Installer
+title EVO OMNIVOICE - Portable Installer
 color 0B
 
 set "BIN_DIR=%~dp0bin"
@@ -15,7 +15,7 @@ set "PY_CMD="
 
 echo.
 echo ============================================================
-echo           OMNIVOICE - PORTABLE INSTALLER
+echo           EVO OMNIVOICE - PORTABLE INSTALLER
 echo ============================================================
 echo.
 echo This installer will automatically set up:
@@ -30,11 +30,15 @@ pause
 echo.
 echo [STEP 1/5] Checking disk space...
 
+:: Get drive letter without colon for PowerShell Get-Volume
+set "DRIVE_LETTER=%~d0"
+set "DRIVE_LETTER=!DRIVE_LETTER:~0,1!"
+
 :: Try multiple methods to check disk space (fallback if one fails)
 set "FREE_SPACE="
 
 :: Method 1: PowerShell Get-Volume (most reliable on Windows 10/11)
-for /f "tokens=*" %%i in ('powershell -Command "try { [math]::Floor((Get-Volume -DriveLetter '%~d0').SizeRemaining / 1GB) } catch { Write-Host 'ERROR' }" 2^>^&1') do set FREE_SPACE=%%i
+for /f "tokens=*" %%i in ('powershell -Command "try { $v = Get-Volume -DriveLetter '!DRIVE_LETTER!'; if ($v) { [math]::Floor($v.SizeRemaining / 1GB) } else { throw } } catch { Write-Host 'ERROR' }" 2^>^&1') do set FREE_SPACE=%%i
 
 :: Validate result
 if "!FREE_SPACE!"=="ERROR" (
